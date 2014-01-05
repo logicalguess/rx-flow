@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <title>RxJS Flow</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container" ng-app="example" ng-controller="AppCtrl">
+    <h2>Rx Flow with Angular</h2>
+    <input type="text" size="50" autofocus placeholder="search term" ng-model="search">
+    <a class="btn btn-primary" role="button" ng-click="click()">Search</a>
+
+    <ul>
+        <li ng-repeat="result in results">{{result}}</li>
+    </ul>
+
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/rxjs/2.2.10/rx.lite.compat.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="../lib/rx.angular.js"></script>
+    <script src="app.js"></script>
+</div>
+</body>
+</html>  
