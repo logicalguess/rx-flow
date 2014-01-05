@@ -33,4 +33,4 @@ Usage with AngularJs:
 Angular's two-way binding is nicely complementing the interaction flow.
 
 Such dynamic flows could be used to implement interaction contexts and roles in DCI. The <code>combineLatest</code>
-operator of <code>Observables</code> could be used to support multiple inputs.
+operator of <code>Observable</code>s could be used to support multiple inputs.
