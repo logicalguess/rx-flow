@@ -1,4 +1,4 @@
-h1. Interaction Flows with RxJs
+# Interaction Flows with RxJs
 
 Usage:
 
