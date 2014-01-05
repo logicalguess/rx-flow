@@ -1,21 +1,30 @@
 # Interaction Flows with RxJs
 
+Inspired by [Microsoft's project](https://github.com/Reactive-Extensions/rx.angular.js)
+
 Definition (it works on any object):
 
       function createFlow(context, fnName, input, output, promiseProvider, procFn) {
-           createObservableFunction(context)(fnName)
-                .map(function () { return context[input]; })
-                 .flatMapLatest(promiseToObservable(promiseProvider, procFn))
-                  .subscribe(function(results) {
-                       context[output] = results;
-                   });
+        ...
        }
 
-This will add a function <code>click</code> on the scope, whose invocation will trigger a flow that will use the
+This will add a function <code>fnName</code> on the context, whose invocation will trigger a flow that will use the
 <code>input</code> data and the promiseProvider to create a promise whose results will be used to populate the
 <code>output</code> field, after transforming the promise value with the <code>procFn</code> function.
 
 Usage with AngularJs:
+
+    var dataProvider = function(term) {
+            return $http({
+                    url: "http://en.wikipedia.org/w/api.php?&callback=JSON_CALLBACK",
+                    method: "jsonp",
+                    params: {
+                            action: "opensearch",
+                            search: term,
+                            format: "json"
+                    }
+            });
+     }
 
      createFlow($scope, 'click', 'search', 'results', dataProvider, function(response) {return response.data[1]});
 
