@@ -1,6 +1,8 @@
 # Interaction Flows with RxJs
 
-Inspired by [Microsoft's project](https://github.com/Reactive-Extensions/rx.angular.js)
+Inspired by [Microsoft's project](https://github.com/Reactive-Extensions/rx.angular.js) .
+
+![](./screenshot.png)
 
 Definition (it works on any object):
 
