@@ -1,8 +1,8 @@
 ;(function () {
 
     function promiseToObservable(promiseProvider, procFn) {
-        return function(arg) {
-            var obs = Rx.Observable.fromPromise(promiseProvider(arg));
+        return function() {
+            var obs = Rx.Observable.fromPromise(promiseProvider.apply(this, arguments));
             if (procFn) {
                 obs = obs.select(procFn)
             }
