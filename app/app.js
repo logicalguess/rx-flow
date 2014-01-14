@@ -1,4 +1,45 @@
-;(function (undefined) {
+;(function () {
+
+    function promiseToObservable(promiseProvider, procFn) {
+        return function(arg) {
+            var obs = Rx.Observable.fromPromise(promiseProvider(arg));
+            if (procFn) {
+                obs = obs.select(procFn)
+            }
+            return obs;
+        };
+    }
+
+    function createObservableFunction(context) {
+        return function(functionName, listener) {
+
+            return Rx.Observable.create(function (observer) {
+                context[functionName] = function () {
+                    if (listener) {
+                        observer.onNext(listener.apply(this, arguments));
+                    } else if (arguments.length === 1) {
+                        observer.onNext(arguments[0]);
+                    } else {
+                        observer.onNext(arguments);
+                    }
+                };
+
+                return function () {
+                    // Remove our listener function from the scope.
+                    delete context[functionName];
+                };
+            });
+        }
+    }
+
+    function createFlow(context, fnName, input, output, promiseProvider, procFn) {
+        createObservableFunction(context)(fnName)
+            .map(function () { return context[input]; })
+            .flatMapLatest(promiseToObservable(promiseProvider, procFn))
+            .subscribe(function(results) {
+                context[output] = results;
+            });
+    }
 
     angular.module('example', ['rx'])
         .controller('AppCtrl', function($scope, $http, rx) {
@@ -29,42 +70,10 @@
                         format: "json"
                     }
                 });
-            }
-
-            function promiseToObservable(promiseProvider, procFn) {
-                return function(arg) {
-                    var obs = rx.Observable.fromPromise(promiseProvider(arg));
-                    if (procFn) {
-                        obs = obs.select(procFn)
-                    }
-                    return obs;
-                };
-            }
+            };
 
             $scope.search = '';
             $scope.results = [];
-
-            function createObservableFunction(context) {
-               return function(functionName, listener) {
-
-                    return Rx.Observable.create(function (observer) {
-                        context[functionName] = function () {
-                            if (listener) {
-                                observer.onNext(listener.apply(this, arguments));
-                            } else if (arguments.length === 1) {
-                                observer.onNext(arguments[0]);
-                            } else {
-                                observer.onNext(arguments);
-                            }
-                        };
-
-                        return function () {
-                            // Remove our listener function from the scope.
-                            delete context[functionName];
-                        };
-                    });
-                }
-            }
 
             /*
                 The following code deals with:
@@ -78,16 +87,7 @@
 //                    $scope.results = results;
 //                });
 
-            function createFlow(context, fnName, input, output, promiseProvider, procFn) {
-                createObservableFunction(context)(fnName)
-                    .map(function () { return context[input]; })
-                    .flatMapLatest(promiseToObservable(promiseProvider, procFn))
-                    .subscribe(function(results) {
-                        context[output] = results;
-                    });
-            }
-
             createFlow($scope, 'click', 'search', 'results', dataProvider, function(response) {return response.data[1]});
         });
 
-}.call(this));
+}.call());
